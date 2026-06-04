@@ -93,4 +93,14 @@ describe('POST /api/subscribe', () => {
     expect(res.status).toBe(500);
     expect(mockSend).not.toHaveBeenCalled();
   });
+
+  it('still returns 200 when confirmation email send fails', async () => {
+    mockSend.mockResolvedValue({
+      data: null,
+      error: { name: 'internal_server_error', message: 'Oops' },
+    });
+    const res = await POST(makeRequest({ email: 'test@example.com', role: 'donor' }));
+    expect(res.status).toBe(200);
+    expect(mockSend).toHaveBeenCalled();
+  });
 });
