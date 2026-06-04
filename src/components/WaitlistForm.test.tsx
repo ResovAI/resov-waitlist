@@ -14,11 +14,14 @@ describe('WaitlistForm', () => {
   it('renders email input and both role pill buttons with applicant selected by default', () => {
     render(<WaitlistForm />);
     expect(screen.getByPlaceholderText('Enter your email')).toBeInTheDocument();
-    const buttons = screen.getAllByRole('button', { type: 'button' });
-    expect(buttons[0]).toHaveTextContent('an Applicant');
-    expect(buttons[1]).toHaveTextContent('a Donor');
-    expect(buttons[0]).toHaveClass('bg-dark');
-    expect(buttons[1]).not.toHaveClass('bg-dark');
+
+    const applicantBtn = screen.getByRole('button', { name: /Applicant/i });
+    const donorBtn = screen.getByRole('button', { name: /Donor/i });
+
+    expect(applicantBtn).toBeInTheDocument();
+    expect(donorBtn).toBeInTheDocument();
+    expect(applicantBtn).toHaveClass('bg-dark');
+    expect(donorBtn).not.toHaveClass('bg-dark');
   });
 
   it('switches selected role when the other pill is clicked', async () => {
