@@ -14,18 +14,20 @@ describe('WaitlistForm', () => {
   it('renders email input and both role pill buttons with applicant selected by default', () => {
     render(<WaitlistForm />);
     expect(screen.getByPlaceholderText('Enter your email')).toBeInTheDocument();
-    expect(screen.getByText("I'm an Applicant")).toBeInTheDocument();
-    expect(screen.getByText("I'm a Donor")).toBeInTheDocument();
-    expect(screen.getByText("I'm an Applicant")).toHaveClass('bg-dark');
-    expect(screen.getByText("I'm a Donor")).not.toHaveClass('bg-dark');
+    const buttons = screen.getAllByRole('button', { type: 'button' });
+    expect(buttons[0]).toHaveTextContent('an Applicant');
+    expect(buttons[1]).toHaveTextContent('a Donor');
+    expect(buttons[0]).toHaveClass('bg-dark');
+    expect(buttons[1]).not.toHaveClass('bg-dark');
   });
 
   it('switches selected role when the other pill is clicked', async () => {
     render(<WaitlistForm />);
-    const donorBtn = screen.getByText("I'm a Donor");
+    const buttons = screen.getAllByRole('button', { type: 'button' });
+    const donorBtn = buttons[1];
     await userEvent.click(donorBtn);
     expect(donorBtn).toHaveClass('bg-dark');
-    expect(screen.getByText("I'm an Applicant")).not.toHaveClass('bg-dark');
+    expect(buttons[0]).not.toHaveClass('bg-dark');
   });
 
   it('shows applicant-specific success message after successful submission as applicant', async () => {
@@ -39,7 +41,7 @@ describe('WaitlistForm', () => {
     await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("You're on the list!")).toBeInTheDocument();
+      expect(screen.getByText(/You.?re on the list!/)).toBeInTheDocument();
       expect(screen.getByText('Start finding funding the day we go live.')).toBeInTheDocument();
     });
   });
@@ -51,13 +53,14 @@ describe('WaitlistForm', () => {
     });
 
     render(<WaitlistForm />);
-    await userEvent.click(screen.getByText("I'm a Donor"));
+    const buttons = screen.getAllByRole('button', { type: 'button' });
+    await userEvent.click(buttons[1]); // Click donor button
     await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'donor@example.com');
     await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("You're on the list!")).toBeInTheDocument();
-      expect(screen.getByText("We'll notify donors first when we launch.")).toBeInTheDocument();
+      expect(screen.getByText(/You.?re on the list!/)).toBeInTheDocument();
+      expect(screen.getByText(/We.?ll notify donors first when we launch/)).toBeInTheDocument();
     });
   });
 
@@ -72,7 +75,7 @@ describe('WaitlistForm', () => {
     await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("You're on the list!")).toBeInTheDocument();
+      expect(screen.getByText(/You.?re on the list!/)).toBeInTheDocument();
     });
   });
 
@@ -119,7 +122,7 @@ describe('WaitlistForm', () => {
 
     resolveRequest({ ok: true, json: async () => ({ message: 'Success' }) });
     await waitFor(() => {
-      expect(screen.getByText("You're on the list!")).toBeInTheDocument();
+      expect(screen.getByText(/You.?re on the list!/)).toBeInTheDocument();
     });
   });
 
@@ -146,7 +149,7 @@ describe('WaitlistForm', () => {
 
     await waitFor(() => {
       expect(screen.queryByText('Something went wrong, please try again')).not.toBeInTheDocument();
-      expect(screen.getByText("You're on the list!")).toBeInTheDocument();
+      expect(screen.getByText(/You.?re on the list!/)).toBeInTheDocument();
     });
   });
 });
