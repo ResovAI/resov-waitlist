@@ -60,6 +60,7 @@ export function WaitlistForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Enter your email"
+        aria-label="Email address"
         required
         className="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-dark"
       />
@@ -70,6 +71,7 @@ export function WaitlistForm() {
             key={r}
             type="button"
             onClick={() => setRole(r)}
+            aria-pressed={role === r}
             className={`flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors ${
               role === r
                 ? 'bg-dark text-white'
@@ -81,7 +83,7 @@ export function WaitlistForm() {
         ))}
       </div>
 
-      {error && <p className="text-state-error text-sm text-center">{error}</p>}
+      {error && <p role="alert" className="text-state-error text-sm text-center">{error}</p>}
 
       <button
         type="submit"

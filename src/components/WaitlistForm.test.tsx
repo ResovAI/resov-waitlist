@@ -102,4 +102,51 @@ describe('WaitlistForm', () => {
       expect(screen.getByText('Something went wrong, please try again')).toBeInTheDocument();
     });
   });
+
+  it('disables submit button and shows "Joining..." while request is in flight', async () => {
+    let resolveRequest!: (value: unknown) => void;
+    mockFetch.mockReturnValue(
+      new Promise((resolve) => {
+        resolveRequest = resolve;
+      })
+    );
+
+    render(<WaitlistForm />);
+    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'test@example.com');
+    await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
+
+    expect(screen.getByRole('button', { name: /Joining\.\.\./i })).toBeDisabled();
+
+    resolveRequest({ ok: true, json: async () => ({ message: 'Success' }) });
+    await waitFor(() => {
+      expect(screen.getByText("You're on the list!")).toBeInTheDocument();
+    });
+  });
+
+  it('clears error message on resubmit after a previous failure', async () => {
+    mockFetch
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ message: 'Something went wrong, please try again' }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ message: 'Success' }),
+      });
+
+    render(<WaitlistForm />);
+    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'test@example.com');
+    await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Something went wrong, please try again')).toBeInTheDocument();
+    });
+
+    await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
+
+    await waitFor(() => {
+      expect(screen.queryByText('Something went wrong, please try again')).not.toBeInTheDocument();
+      expect(screen.getByText("You're on the list!")).toBeInTheDocument();
+    });
+  });
 });
