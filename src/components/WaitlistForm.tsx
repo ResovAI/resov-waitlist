@@ -47,7 +47,7 @@ export function WaitlistForm() {
     return (
       <div className="text-center py-8">
         <p className="text-4xl mb-4">🎉</p>
-        <h3 className="text-xl font-bold text-dark mb-2">You're on the list!</h3>
+        <h3 className="text-xl font-bold text-dark mb-2">You&apos;re on the list!</h3>
         <p className="text-grey">{SUCCESS_MESSAGES[successRole]}</p>
       </div>
     );
@@ -78,7 +78,7 @@ export function WaitlistForm() {
                 : 'bg-neutral-100 text-grey hover:bg-neutral-200'
             }`}
           >
-            {r === 'donor' ? "I'm a Donor" : "I'm an Applicant"}
+            {r === 'donor' ? "I&apos;m a Donor" : "I&apos;m an Applicant"}
           </button>
         ))}
       </div>

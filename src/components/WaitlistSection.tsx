@@ -7,7 +7,7 @@ export function WaitlistSection() {
         <div className="text-center mb-8">
           <h2 className="font-bold text-3xl text-dark mb-3">Be the first to know</h2>
           <p className="text-grey">
-            Join the waitlist and we'll let you know when Resov launches.
+            Join the waitlist and we&apos;ll let you know when Resov launches.
           </p>
         </div>
         <WaitlistForm />
