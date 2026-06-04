@@ -13,7 +13,7 @@ describe('WaitlistForm', () => {
 
   it('renders email input and both role pill buttons with applicant selected by default', () => {
     render(<WaitlistForm />);
-    expect(screen.getByPlaceholderText('Enter your email')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument();
 
     const applicantBtn = screen.getByRole('button', { name: /Applicant/i });
     const donorBtn = screen.getByRole('button', { name: /Donor/i });
@@ -26,11 +26,11 @@ describe('WaitlistForm', () => {
 
   it('switches selected role when the other pill is clicked', async () => {
     render(<WaitlistForm />);
-    const buttons = screen.getAllByRole('button', { type: 'button' });
-    const donorBtn = buttons[1];
+    const donorBtn = screen.getByRole('button', { name: /Donor/i });
+    const applicantBtn = screen.getByRole('button', { name: /Applicant/i });
     await userEvent.click(donorBtn);
     expect(donorBtn).toHaveClass('bg-dark');
-    expect(buttons[0]).not.toHaveClass('bg-dark');
+    expect(applicantBtn).not.toHaveClass('bg-dark');
   });
 
   it('shows applicant-specific success message after successful submission as applicant', async () => {
@@ -40,7 +40,7 @@ describe('WaitlistForm', () => {
     });
 
     render(<WaitlistForm />);
-    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'ap@example.com');
+    await userEvent.type(screen.getByPlaceholderText('you@example.com'), 'ap@example.com');
     await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
 
     await waitFor(() => {
@@ -56,9 +56,8 @@ describe('WaitlistForm', () => {
     });
 
     render(<WaitlistForm />);
-    const buttons = screen.getAllByRole('button', { type: 'button' });
-    await userEvent.click(buttons[1]); // Click donor button
-    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'donor@example.com');
+    await userEvent.click(screen.getByRole('button', { name: /Donor/i }));
+    await userEvent.type(screen.getByPlaceholderText('you@example.com'), 'donor@example.com');
     await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
 
     await waitFor(() => {
@@ -74,7 +73,7 @@ describe('WaitlistForm', () => {
     });
 
     render(<WaitlistForm />);
-    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'dup@example.com');
+    await userEvent.type(screen.getByPlaceholderText('you@example.com'), 'dup@example.com');
     await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
 
     await waitFor(() => {
@@ -89,7 +88,7 @@ describe('WaitlistForm', () => {
     });
 
     render(<WaitlistForm />);
-    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'test@example.com');
+    await userEvent.type(screen.getByPlaceholderText('you@example.com'), 'test@example.com');
     await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
 
     await waitFor(() => {
@@ -101,7 +100,7 @@ describe('WaitlistForm', () => {
     mockFetch.mockRejectedValue(new Error('Network error'));
 
     render(<WaitlistForm />);
-    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'test@example.com');
+    await userEvent.type(screen.getByPlaceholderText('you@example.com'), 'test@example.com');
     await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
 
     await waitFor(() => {
@@ -118,7 +117,7 @@ describe('WaitlistForm', () => {
     );
 
     render(<WaitlistForm />);
-    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'test@example.com');
+    await userEvent.type(screen.getByPlaceholderText('you@example.com'), 'test@example.com');
     await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
 
     expect(screen.getByRole('button', { name: /Joining\.\.\./i })).toBeDisabled();
@@ -141,7 +140,7 @@ describe('WaitlistForm', () => {
       });
 
     render(<WaitlistForm />);
-    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'test@example.com');
+    await userEvent.type(screen.getByPlaceholderText('you@example.com'), 'test@example.com');
     await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
 
     await waitFor(() => {
