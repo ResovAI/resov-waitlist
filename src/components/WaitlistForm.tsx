@@ -78,7 +78,7 @@ export function WaitlistForm() {
                 : 'bg-neutral-100 text-grey hover:bg-neutral-200'
             }`}
           >
-            {r === 'donor' ? "I&apos;m a Donor" : "I&apos;m an Applicant"}
+            {r === 'donor' ? "I'm a Donor" : "I'm an Applicant"}
           </button>
         ))}
       </div>
