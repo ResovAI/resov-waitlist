@@ -11,6 +11,19 @@ export const metadata: Metadata = {
   title: 'Resov — Join the Waitlist',
   description:
     'The AI-powered grant marketplace. Join the waitlist to be the first to know when we launch.',
+  metadataBase: new URL('https://www.tryresov.com'),
+  openGraph: {
+    title: 'Resov — The AI-Powered Grant Marketplace',
+    description: 'Join the waitlist to be the first to know when we launch.',
+    url: 'https://www.tryresov.com',
+    siteName: 'Resov',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Resov — The AI-Powered Grant Marketplace',
+    description: 'Join the waitlist to be the first to know when we launch.',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
