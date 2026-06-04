@@ -66,10 +66,10 @@ describe('WaitlistForm', () => {
     });
   });
 
-  it('shows success state for duplicate signup (already on list)', async () => {
+  it('shows inline error for duplicate signup (already on waitlist)', async () => {
     mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({ message: "You're already on the list!" }),
+      ok: false,
+      json: async () => ({ message: "You're already on the waitlist as a donor." }),
     });
 
     render(<WaitlistForm />);
@@ -77,7 +77,7 @@ describe('WaitlistForm', () => {
     await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/You.?re on the list!/)).toBeInTheDocument();
+      expect(screen.getByText(/already on the waitlist/i)).toBeInTheDocument();
     });
   });
 

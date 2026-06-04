@@ -84,12 +84,12 @@ describe('POST /api/subscribe', () => {
     expect(mockCreate).not.toHaveBeenCalled();
   });
 
-  it('returns 200 with already-on-list message when same email and same role resubmits', async () => {
+  it('returns 400 when same email and same role resubmits', async () => {
     mockRedisGet.mockResolvedValue('donor');
     const res = await POST(makeRequest({ email: 'dup@example.com', role: 'donor' }));
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(400);
     const body = await res.json();
-    expect(body.message).toBe("You're already on the list!");
+    expect(body.message).toBe("You're already on the waitlist as a donor.");
     expect(mockCreate).not.toHaveBeenCalled();
     expect(mockSend).not.toHaveBeenCalled();
   });

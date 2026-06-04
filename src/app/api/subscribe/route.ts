@@ -70,7 +70,10 @@ export async function POST(request: NextRequest) {
   const existingRole = await redis.get<string>(`waitlist:${email}`);
   if (existingRole) {
     if (existingRole === role) {
-      return NextResponse.json({ message: "You're already on the list!" });
+      return NextResponse.json(
+        { message: `You're already on the waitlist as a ${role}.` },
+        { status: 400 }
+      );
     }
     return NextResponse.json(
       { message: `This email is already registered as a ${existingRole}.` },
