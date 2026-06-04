@@ -1,0 +1,105 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { WaitlistForm } from './WaitlistForm';
+
+const mockFetch = vi.fn();
+global.fetch = mockFetch;
+
+describe('WaitlistForm', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders email input and both role pill buttons with applicant selected by default', () => {
+    render(<WaitlistForm />);
+    expect(screen.getByPlaceholderText('Enter your email')).toBeInTheDocument();
+    expect(screen.getByText("I'm an Applicant")).toBeInTheDocument();
+    expect(screen.getByText("I'm a Donor")).toBeInTheDocument();
+    expect(screen.getByText("I'm an Applicant")).toHaveClass('bg-dark');
+    expect(screen.getByText("I'm a Donor")).not.toHaveClass('bg-dark');
+  });
+
+  it('switches selected role when the other pill is clicked', async () => {
+    render(<WaitlistForm />);
+    const donorBtn = screen.getByText("I'm a Donor");
+    await userEvent.click(donorBtn);
+    expect(donorBtn).toHaveClass('bg-dark');
+    expect(screen.getByText("I'm an Applicant")).not.toHaveClass('bg-dark');
+  });
+
+  it('shows applicant-specific success message after successful submission as applicant', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: 'Success' }),
+    });
+
+    render(<WaitlistForm />);
+    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'ap@example.com');
+    await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("You're on the list!")).toBeInTheDocument();
+      expect(screen.getByText('Start finding funding the day we go live.')).toBeInTheDocument();
+    });
+  });
+
+  it('shows donor-specific success message after successful submission as donor', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: 'Success' }),
+    });
+
+    render(<WaitlistForm />);
+    await userEvent.click(screen.getByText("I'm a Donor"));
+    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'donor@example.com');
+    await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("You're on the list!")).toBeInTheDocument();
+      expect(screen.getByText("We'll notify donors first when we launch.")).toBeInTheDocument();
+    });
+  });
+
+  it('shows success state for duplicate signup (already on list)', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: "You're already on the list!" }),
+    });
+
+    render(<WaitlistForm />);
+    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'dup@example.com');
+    await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("You're on the list!")).toBeInTheDocument();
+    });
+  });
+
+  it('shows error message when API returns non-ok response', async () => {
+    mockFetch.mockResolvedValue({
+      ok: false,
+      json: async () => ({ message: 'Something went wrong, please try again' }),
+    });
+
+    render(<WaitlistForm />);
+    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'test@example.com');
+    await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Something went wrong, please try again')).toBeInTheDocument();
+    });
+  });
+
+  it('shows error message when fetch throws (network error)', async () => {
+    mockFetch.mockRejectedValue(new Error('Network error'));
+
+    render(<WaitlistForm />);
+    await userEvent.type(screen.getByPlaceholderText('Enter your email'), 'test@example.com');
+    await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Something went wrong, please try again')).toBeInTheDocument();
+    });
+  });
+});
