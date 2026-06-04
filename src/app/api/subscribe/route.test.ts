@@ -3,20 +3,26 @@ import { NextRequest } from 'next/server';
 
 vi.mock('@/lib/resend', () => ({
   resend: {
-    contacts: {
-      create: vi.fn(),
-    },
-    emails: {
-      send: vi.fn(),
-    },
+    contacts: { create: vi.fn() },
+    emails: { send: vi.fn() },
+  },
+}));
+
+vi.mock('@/lib/redis', () => ({
+  redis: {
+    get: vi.fn(),
+    set: vi.fn(),
   },
 }));
 
 import { resend } from '@/lib/resend';
+import { redis } from '@/lib/redis';
 import { POST } from './route';
 
 const mockCreate = resend.contacts.create as ReturnType<typeof vi.fn>;
 const mockSend = resend.emails.send as ReturnType<typeof vi.fn>;
+const mockRedisGet = redis.get as ReturnType<typeof vi.fn>;
+const mockRedisSet = redis.set as ReturnType<typeof vi.fn>;
 
 function makeRequest(body: unknown): NextRequest {
   return new Request('http://localhost/api/subscribe', {
@@ -32,11 +38,13 @@ describe('POST /api/subscribe', () => {
     process.env.RESEND_DONOR_AUDIENCE_ID = 'aud_donor_test';
     process.env.RESEND_APPLICANT_AUDIENCE_ID = 'aud_applicant_test';
     process.env.FROM_EMAIL = 'no-reply@resov.com';
+    mockRedisGet.mockResolvedValue(null);
+    mockRedisSet.mockResolvedValue('OK');
     mockCreate.mockResolvedValue({ data: { id: 'c_1' }, error: null });
     mockSend.mockResolvedValue({ data: { id: 'e_1' }, error: null });
   });
 
-  it('adds donor to donor audience and sends confirmation email', async () => {
+  it('adds donor to donor audience, stores in redis, and sends confirmation email', async () => {
     const res = await POST(makeRequest({ email: 'donor@example.com', role: 'donor' }));
     expect(res.status).toBe(200);
     expect(mockCreate).toHaveBeenCalledWith({
@@ -44,6 +52,7 @@ describe('POST /api/subscribe', () => {
       email: 'donor@example.com',
       unsubscribed: false,
     });
+    expect(mockRedisSet).toHaveBeenCalledWith('waitlist:donor@example.com', 'donor');
     expect(mockSend).toHaveBeenCalledWith(
       expect.objectContaining({
         to: 'donor@example.com',
@@ -58,39 +67,50 @@ describe('POST /api/subscribe', () => {
     expect(mockCreate).toHaveBeenCalledWith(
       expect.objectContaining({ audienceId: 'aud_applicant_test' })
     );
+    expect(mockRedisSet).toHaveBeenCalledWith('waitlist:ap@example.com', 'applicant');
   });
 
-  it('returns 400 for invalid email', async () => {
+  it('returns 400 for invalid email without touching redis or resend', async () => {
     const res = await POST(makeRequest({ email: 'not-an-email', role: 'donor' }));
     expect(res.status).toBe(400);
+    expect(mockRedisGet).not.toHaveBeenCalled();
     expect(mockCreate).not.toHaveBeenCalled();
   });
 
-  it('returns 400 for invalid role', async () => {
+  it('returns 400 for invalid role without touching redis or resend', async () => {
     const res = await POST(makeRequest({ email: 'test@example.com', role: 'admin' }));
     expect(res.status).toBe(400);
+    expect(mockRedisGet).not.toHaveBeenCalled();
     expect(mockCreate).not.toHaveBeenCalled();
   });
 
-  it('returns 200 with already-on-list message for duplicate contact', async () => {
-    mockCreate.mockResolvedValue({
-      data: null,
-      error: { name: 'validation_error', message: 'Contact already exists' },
-    });
+  it('returns 200 with already-on-list message when same email and same role resubmits', async () => {
+    mockRedisGet.mockResolvedValue('donor');
     const res = await POST(makeRequest({ email: 'dup@example.com', role: 'donor' }));
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.message).toBe("You're already on the list!");
+    expect(mockCreate).not.toHaveBeenCalled();
     expect(mockSend).not.toHaveBeenCalled();
   });
 
-  it('returns 500 when Resend contacts API fails with unexpected error', async () => {
+  it('returns 400 when same email tries to sign up as a different role', async () => {
+    mockRedisGet.mockResolvedValue('donor');
+    const res = await POST(makeRequest({ email: 'dup@example.com', role: 'applicant' }));
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.message).toBe('This email is already registered as a donor.');
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
+
+  it('returns 500 when Resend contacts API fails and does not store in redis', async () => {
     mockCreate.mockResolvedValue({
       data: null,
       error: { name: 'api_error', message: 'Internal server error' },
     });
     const res = await POST(makeRequest({ email: 'test@example.com', role: 'donor' }));
     expect(res.status).toBe(500);
+    expect(mockRedisSet).not.toHaveBeenCalled();
     expect(mockSend).not.toHaveBeenCalled();
   });
 

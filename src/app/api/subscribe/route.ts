@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { resend } from '@/lib/resend';
+import { redis } from '@/lib/redis';
 
 const schema = z.object({
   email: z.string().email(),
@@ -65,8 +66,19 @@ export async function POST(request: NextRequest) {
   }
 
   const { email, role } = result.data;
-  const audienceId = getAudienceId(role);
 
+  const existingRole = await redis.get<string>(`waitlist:${email}`);
+  if (existingRole) {
+    if (existingRole === role) {
+      return NextResponse.json({ message: "You're already on the list!" });
+    }
+    return NextResponse.json(
+      { message: `This email is already registered as a ${existingRole}.` },
+      { status: 400 }
+    );
+  }
+
+  const audienceId = getAudienceId(role);
   const { error: contactError } = await resend.contacts.create({
     audienceId,
     email,
@@ -74,15 +86,14 @@ export async function POST(request: NextRequest) {
   });
 
   if (contactError) {
-    if (contactError.name === 'validation_error') {
-      return NextResponse.json({ message: "You're already on the list!" });
-    }
     console.error('Resend contacts error:', contactError);
     return NextResponse.json(
       { message: 'Something went wrong, please try again' },
       { status: 500 }
     );
   }
+
+  await redis.set(`waitlist:${email}`, role);
 
   const { error: emailError } = await resend.emails.send({
     from: `Resov <${getFromEmail()}>`,
