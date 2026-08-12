@@ -10,19 +10,21 @@ const rethink = Rethink_Sans({
 export const metadata: Metadata = {
   title: 'Resov — Join the Waitlist',
   description:
-    'The AI-powered grant marketplace. Join the waitlist to be the first to know when we launch.',
+    'AI-powered application management — templates, AI vetting, verification, scoring, and ranking for grants, fellowships, and challenges. Join the waitlist.',
   metadataBase: new URL('https://www.tryresov.com'),
   openGraph: {
-    title: 'Resov — The AI-Powered Grant Marketplace',
-    description: 'Join the waitlist to be the first to know when we launch.',
+    title: 'Resov — The AI-powered application management platform',
+    description:
+      'Create and manage applications end to end, with built-in analysis, verification, scoring, and ranking. Join the waitlist.',
     url: 'https://www.tryresov.com',
     siteName: 'Resov',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Resov — The AI-Powered Grant Marketplace',
-    description: 'Join the waitlist to be the first to know when we launch.',
+    title: 'Resov — The AI-powered application management platform',
+    description:
+      'Create and manage applications end to end, with built-in analysis, verification, scoring, and ranking. Join the waitlist.',
   },
 };
 

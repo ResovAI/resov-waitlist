@@ -20,17 +20,18 @@ export function HeroSection() {
           className="font-bold text-4xl lg:text-[64px] lg:leading-[67px] tracking-[-0.02em] text-white mb-6 animate-fade-up"
           style={{ animationDelay: '0.1s', opacity: 0 }}
         >
-          The AI-Powered Grant
+          AI-powered application
           <br className="hidden lg:block" />
-          Marketplace
+          management platform
         </h1>
 
         <p
           className="text-grey-light text-base lg:text-lg leading-7 lg:leading-8 max-w-xl mx-auto mb-10 animate-fade-up"
           style={{ animationDelay: '0.2s', opacity: 0 }}
         >
-          Move beyond simple listings. Resov connects enterprise donors with qualified applicants
-          through AI-powered matching, full grant lifecycle management, and seamless disbursement.
+          The application forms you already use—now with built-in analysis, verification, scoring,
+          and ranking. From grants and fellowships to competitions and innovation challenges, Resov
+          makes selection faster and fairer.
         </p>
 
         <div

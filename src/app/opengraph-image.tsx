@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'Resov — The AI-Powered Grant Marketplace';
+export const alt = 'Resov — The AI-powered application management platform';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -61,7 +61,7 @@ export default function Image() {
             maxWidth: 900,
           }}
         >
-          The AI-Powered Grant Marketplace
+          The AI-powered application management platform
         </div>
 
         <div
@@ -74,7 +74,7 @@ export default function Image() {
             lineHeight: 1.5,
           }}
         >
-          Connecting enterprise donors with qualified applicants through AI-powered matching and full grant lifecycle management.
+          Templates, AI vetting, verification, scoring, and ranking — for grants, fellowships, and challenges.
         </div>
 
         <div
