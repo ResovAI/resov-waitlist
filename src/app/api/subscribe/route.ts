@@ -17,12 +17,18 @@ function getFromEmail(): string {
   return process.env.FROM_EMAIL ?? 'no-reply@resov.com';
 }
 
+// User-facing label for a role. The internal value stays 'donor' (audience IDs, redis
+// keys, API contract) — only the wording shown to users changes to "funder".
+function roleDisplay(role: string): string {
+  return role === 'donor' ? 'funder' : 'applicant';
+}
+
 function confirmationEmailHtml(role: 'donor' | 'applicant'): string {
   const roleMessage =
     role === 'donor'
-      ? "We'll notify donors first when we launch."
+      ? "We'll notify funders first when we launch."
       : 'Start finding funding the day we go live.';
-  const roleLabel = role === 'donor' ? 'Donor' : 'Applicant';
+  const roleLabel = role === 'donor' ? 'Funder' : 'Applicant';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -71,12 +77,12 @@ export async function POST(request: NextRequest) {
   if (existingRole) {
     if (existingRole === role) {
       return NextResponse.json(
-        { message: `You're already on the waitlist as a ${role}.` },
+        { message: `You're already on the waitlist as a ${roleDisplay(role)}.` },
         { status: 400 }
       );
     }
     return NextResponse.json(
-      { message: `This email is already registered as a ${existingRole}.` },
+      { message: `This email is already registered as a ${roleDisplay(existingRole)}.` },
       { status: 400 }
     );
   }

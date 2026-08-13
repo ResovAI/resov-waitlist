@@ -89,7 +89,7 @@ describe('POST /api/subscribe', () => {
     const res = await POST(makeRequest({ email: 'dup@example.com', role: 'donor' }));
     expect(res.status).toBe(400);
     const body = await res.json();
-    expect(body.message).toBe("You're already on the waitlist as a donor.");
+    expect(body.message).toBe("You're already on the waitlist as a funder.");
     expect(mockCreate).not.toHaveBeenCalled();
     expect(mockSend).not.toHaveBeenCalled();
   });
@@ -99,7 +99,7 @@ describe('POST /api/subscribe', () => {
     const res = await POST(makeRequest({ email: 'dup@example.com', role: 'applicant' }));
     expect(res.status).toBe(400);
     const body = await res.json();
-    expect(body.message).toBe('This email is already registered as a donor.');
+    expect(body.message).toBe('This email is already registered as a funder.');
     expect(mockCreate).not.toHaveBeenCalled();
   });
 

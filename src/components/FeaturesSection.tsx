@@ -1,6 +1,6 @@
 const features = [
   {
-    title: 'For Donors',
+    title: 'For Funders & Grantmakers',
     accent: 'bg-blue-50',
     iconColor: 'text-blue-600',
     icon: (
@@ -9,7 +9,7 @@ const features = [
       </svg>
     ),
     description:
-      'Post grants, monitor the full lifecycle, and leverage AI-powered applicant vetting to fund the right projects with confidence.',
+      'Launch grants, fellowships, competitions, or challenges from ready-made templates—then review, verify, and score submissions with AI to select the right people with confidence.',
   },
   {
     title: 'For Applicants',
@@ -23,10 +23,10 @@ const features = [
       </svg>
     ),
     description:
-      'Discover relevant funding opportunities, apply in one place, and get AI-assisted tools to strengthen your applications.',
+      'Discover opportunities and apply in one place, with AI-assisted tools that help you put your strongest submission forward.',
   },
   {
-    title: 'AI-Powered',
+    title: 'AI at Every Step',
     accent: 'bg-amber-50',
     iconColor: 'text-amber-500',
     icon: (
@@ -35,7 +35,7 @@ const features = [
       </svg>
     ),
     description:
-      'Automated applicant–grant matching, risk scoring, and disbursement management — powered by AI from start to finish.',
+      'Automated vetting, verification, scoring, and ranking—so every decision is faster, fairer, and evidence-based.',
   },
 ];
 

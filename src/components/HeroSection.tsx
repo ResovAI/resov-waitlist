@@ -20,9 +20,9 @@ export function HeroSection() {
           className="font-bold text-4xl lg:text-[64px] lg:leading-[67px] tracking-[-0.02em] text-white mb-6 animate-fade-up"
           style={{ animationDelay: '0.1s', opacity: 0 }}
         >
-          AI-powered application
+          AI-Powered Application
           <br className="hidden lg:block" />
-          management platform
+          Management Platform
         </h1>
 
         <p

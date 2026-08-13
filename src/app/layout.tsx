@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     'AI-powered application management — templates, AI vetting, verification, scoring, and ranking for grants, fellowships, and challenges. Join the waitlist.',
   metadataBase: new URL('https://www.tryresov.com'),
   openGraph: {
-    title: 'Resov — The AI-powered application management platform',
+    title: 'Resov — The AI-Powered Application Management Platform',
     description:
       'Create and manage applications end to end, with built-in analysis, verification, scoring, and ranking. Join the waitlist.',
     url: 'https://www.tryresov.com',
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Resov — The AI-powered application management platform',
+    title: 'Resov — The AI-Powered Application Management Platform',
     description:
       'Create and manage applications end to end, with built-in analysis, verification, scoring, and ranking. Join the waitlist.',
   },

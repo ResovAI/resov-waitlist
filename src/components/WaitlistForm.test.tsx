@@ -16,7 +16,7 @@ describe('WaitlistForm', () => {
     expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument();
 
     const applicantBtn = screen.getByRole('button', { name: /Applicant/i });
-    const donorBtn = screen.getByRole('button', { name: /Donor/i });
+    const donorBtn = screen.getByRole('button', { name: /Funder/i });
 
     expect(applicantBtn).toBeInTheDocument();
     expect(donorBtn).toBeInTheDocument();
@@ -26,7 +26,7 @@ describe('WaitlistForm', () => {
 
   it('switches selected role when the other pill is clicked', async () => {
     render(<WaitlistForm />);
-    const donorBtn = screen.getByRole('button', { name: /Donor/i });
+    const donorBtn = screen.getByRole('button', { name: /Funder/i });
     const applicantBtn = screen.getByRole('button', { name: /Applicant/i });
     await userEvent.click(donorBtn);
     expect(donorBtn).toHaveClass('bg-dark');
@@ -49,27 +49,27 @@ describe('WaitlistForm', () => {
     });
   });
 
-  it('shows donor-specific success message after successful submission as donor', async () => {
+  it('shows funder-specific success message after successful submission as funder', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({ message: 'Success' }),
     });
 
     render(<WaitlistForm />);
-    await userEvent.click(screen.getByRole('button', { name: /Donor/i }));
+    await userEvent.click(screen.getByRole('button', { name: /Funder/i }));
     await userEvent.type(screen.getByPlaceholderText('you@example.com'), 'donor@example.com');
     await userEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }));
 
     await waitFor(() => {
       expect(screen.getByText(/You.?re on the list!/)).toBeInTheDocument();
-      expect(screen.getByText(/We.?ll notify donors first when we launch/)).toBeInTheDocument();
+      expect(screen.getByText(/We.?ll notify funders first when we launch/)).toBeInTheDocument();
     });
   });
 
   it('shows inline error for duplicate signup (already on waitlist)', async () => {
     mockFetch.mockResolvedValue({
       ok: false,
-      json: async () => ({ message: "You're already on the waitlist as a donor." }),
+      json: async () => ({ message: "You're already on the waitlist as a funder." }),
     });
 
     render(<WaitlistForm />);

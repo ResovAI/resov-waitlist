@@ -4,8 +4,10 @@ import { useState } from 'react';
 
 type Role = 'donor' | 'applicant';
 
+// The 'donor' KEY is the internal role value (kept for the API/Resend/redis); the copy
+// shown to users says "funder".
 const SUCCESS_MESSAGES: Record<Role, string> = {
-  donor: "We'll notify donors first when we launch.",
+  donor: "We'll notify funders first when we launch.",
   applicant: 'Start finding funding the day we go live.',
 };
 
@@ -88,7 +90,7 @@ export function WaitlistForm() {
                   : 'text-grey hover:text-dark'
               }`}
             >
-              {r === 'donor' ? 'Donor' : 'Applicant'}
+              {r === 'donor' ? 'Funder' : 'Applicant'}
             </button>
           ))}
         </div>
