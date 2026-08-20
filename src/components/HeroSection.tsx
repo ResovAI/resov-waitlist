@@ -29,7 +29,7 @@ export function HeroSection() {
           className="text-grey-light text-base lg:text-lg leading-7 lg:leading-8 max-w-xl mx-auto mb-10 animate-fade-up"
           style={{ animationDelay: '0.2s', opacity: 0 }}
         >
-          The application forms you already use—now with built-in analysis, verification, scoring,
+          The application forms you already use, now with built-in analysis, verification, scoring,
           and ranking. From grants and fellowships to competitions and innovation challenges, Resov
           makes selection faster and fairer.
         </p>

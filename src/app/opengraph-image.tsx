@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'Resov — The AI-Powered Application Management Platform';
+export const alt = 'Resov: The AI-Powered Application Management Platform';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -74,7 +74,7 @@ export default function Image() {
             lineHeight: 1.5,
           }}
         >
-          Templates, AI vetting, verification, scoring, and ranking — for grants, fellowships, and challenges.
+          Templates, AI vetting, verification, scoring, and ranking for grants, fellowships, and challenges.
         </div>
 
         <div

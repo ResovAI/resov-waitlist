@@ -18,7 +18,7 @@ function getFromEmail(): string {
 }
 
 // User-facing label for a role. The internal value stays 'donor' (audience IDs, redis
-// keys, API contract) — only the wording shown to users changes to "funder".
+// keys, API contract). Only the wording shown to users changes to "funder".
 function roleDisplay(role: string): string {
   return role === 'donor' ? 'funder' : 'applicant';
 }

@@ -9,7 +9,7 @@ const features = [
       </svg>
     ),
     description:
-      'Launch grants, fellowships, competitions, or challenges from ready-made templates—then review, verify, and score submissions with AI to select the right people with confidence.',
+      'Launch grants, fellowships, competitions, or challenges from ready-made templates, then review, verify, and score submissions with AI to select the right people with confidence.',
   },
   {
     title: 'For Applicants',
@@ -35,7 +35,7 @@ const features = [
       </svg>
     ),
     description:
-      'Automated vetting, verification, scoring, and ranking—so every decision is faster, fairer, and evidence-based.',
+      'Automated vetting, verification, scoring, and ranking, so every decision is faster, fairer, and evidence-based.',
   },
 ];
 
